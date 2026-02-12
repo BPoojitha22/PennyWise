@@ -1,0 +1,44 @@
+@model PennyWise.ViewModels.IncomeEditViewModel
+@{
+    ViewData["Title"] = "Monthly Income";
+    var currency = ViewBag.CurrencySymbol as string ?? "$";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="col-12 col-md-6 col-lg-5 col-xl-4">
+        <div class="glass-card">
+            <div class="d-flex justify-content-center mb-4">
+                 @(await Html.PartialAsync("_MonthSelector", new { Month = Model.Month, Year = Model.Year }))
+            </div>
+            
+            <div class="text-center mb-4">
+                <h3 class="mb-1">Monthly Income</h3>
+            </div>
+            
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
+                <input type="hidden" asp-for="Month" />
+                <input type="hidden" asp-for="Year" />
+                
+                <div class="mb-4">
+                    <label asp-for="Amount" class="form-label text-muted small text-uppercase fw-bold">Total Expected Income</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 text-muted" style="border-radius: 0.75rem 0 0 0.75rem; border-color: rgba(148, 163, 184, 0.1);">@currency</span>
+                        <input asp-for="Amount" class="form-control ps-2 border-start-0" placeholder="0.00" style="border-radius: 0 0.75rem 0.75rem 0;" />
+                    </div>
+                    <span asp-validation-for="Amount" class="text-danger small mt-1 d-block"></span>
+                    <div class="form-text text-muted small mt-2">Enter your total allocated income for this month.</div>
+                </div>
+                
+                <button type="submit" class="btn btn-modern btn-primary-glow w-100 justify-content-center">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

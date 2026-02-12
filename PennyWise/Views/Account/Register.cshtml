@@ -1,0 +1,66 @@
+@model PennyWise.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-12 col-md-6 col-lg-5 col-xl-4">
+        <div class="text-center mb-5">
+            <h1 class="display-6 fw-bold mb-2">Create Account</h1>
+            <p class="text-muted">Set up PennyWise and start budgeting with intention.</p>
+        </div>
+        
+        <div class="glass-card mb-4" style="border-top: 4px solid var(--secondary);">
+            <form asp-action="Register" method="post" class="p-2">
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                
+                <div class="mb-3">
+                    <label asp-for="UserName" class="form-label text-uppercase small fw-bold text-muted">Username</label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger small mt-1 d-block"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label text-uppercase small fw-bold text-muted">Email Address</label>
+                    <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                    <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CurrencyId" class="form-label text-uppercase small fw-bold text-muted">Preferred Currency</label>
+                    <select asp-for="CurrencyId" asp-items="Model.AvailableCurrencies" class="form-select">
+                        <option value="">Select a Currency</option>
+                    </select>
+                    <span asp-validation-for="CurrencyId" class="text-danger small mt-1 d-block"></span>
+                    <div class="form-text text-muted small mt-1">This will be used for all your financial tracking.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label text-uppercase small fw-bold text-muted">Password</label>
+                    <input asp-for="Password" class="form-control" placeholder="Minimum 6 characters" />
+                    <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
+                </div>
+                
+                <div class="mb-4">
+                    <label asp-for="ConfirmPassword" class="form-label text-uppercase small fw-bold text-muted">Confirm Password</label>
+                    <input asp-for="ConfirmPassword" class="form-control" placeholder="Re-enter password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger small mt-1 d-block"></span>
+                </div>
+                
+                <button type="submit" class="btn btn-modern btn-primary-glow w-100 justify-content-center mt-2" style="background: var(--secondary); box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);">
+                    Start Journey
+                </button>
+            </form>
+        </div>
+        
+        <p class="text-center text-muted small">
+            Already have an account? 
+            <a asp-action="Login" class="text-white text-decoration-none fw-medium">Sign in</a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

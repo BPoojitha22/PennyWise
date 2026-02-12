@@ -1,0 +1,85 @@
+@model dynamic
+@{
+    int currentMonth = Model.Month;
+    int currentYear = Model.Year;
+    string controller = ViewContext.RouteData.Values["Controller"]?.ToString() ?? "Dashboard";
+    string action = ViewContext.RouteData.Values["Action"]?.ToString() ?? "Index";
+    string getUrl = Url.Action(action, controller);
+    
+    var dt = DateTime.Now;
+    
+    // Previous Month Logic
+    int prevMonthIdx = (currentMonth == 1 ? 12 : currentMonth - 1);
+    int prevYear = (currentMonth == 1 ? currentYear - 1 : currentYear);
+    
+    // Next Month Logic
+    int nextMonthIdx = (currentMonth == 12 ? 1 : currentMonth + 1);
+    int nextYear = (currentMonth == 12 ? currentYear + 1 : currentYear);
+    
+    bool isNextDisabled = (nextYear > dt.Year) || (nextYear == dt.Year && nextMonthIdx > dt.Month);
+}
+
+<div class="d-flex gap-2 align-items-center mb-0 month-selector-container">
+    <div class="input-group input-group-sm">
+        <a href="javascript:void(0)" onclick="updatePageContent('@getUrl?month=@prevMonthIdx&year=@prevYear')" class="btn btn-glass px-2 text-muted">
+            &lt;
+        </a>
+        
+        <select class="form-select form-select-sm bg-transparent text-white border-secondary" style="width: auto; min-width: 100px;" 
+                onchange="updatePageContent('@getUrl?month=' + this.value + '&year=@currentYear')">
+            @for (int i = 1; i <= 12; i++)
+            {
+                bool isFuture = (currentYear == dt.Year && i > dt.Month) || (currentYear > dt.Year);
+                <option value="@i" selected="@(currentMonth == i)" disabled="@isFuture" class="text-dark">
+                    @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(i)
+                </option>
+            }
+        </select>
+        
+        <select class="form-select form-select-sm bg-transparent text-white border-secondary text-center" style="width: 80px;" 
+                onchange="updatePageContent('@getUrl?month=@currentMonth&year=' + this.value)">
+            @for (int i = 2024; i <= dt.Year; i++)
+            {
+               <option value="@i" selected="@(currentYear == i)" class="text-dark">@i</option>
+            }
+        </select>
+               
+        @if (isNextDisabled)
+        {
+            <button class="btn btn-glass px-2 text-muted" disabled>&gt;</button>
+        }
+        else
+        {
+            <a href="javascript:void(0)" onclick="updatePageContent('@getUrl?month=@nextMonthIdx&year=@nextYear')" class="btn btn-glass px-2 text-muted">
+                &gt;
+            </a>
+        }
+    </div>
+</div>
+
+<script>
+    function updatePageContent(url) {
+        $('.app-main').css('opacity', '0.5');
+        $.ajax({
+            url: url,
+            type: 'GET',
+            headers: { "X-Requested-With": "XMLHttpRequest" },
+            success: function (data) {
+                // If the response is a partial view, replace the main content
+                // If it's a full page (redirect), standard reload might be needed or prevent it.
+                // Assuming controller returns correct partial view content.
+                
+                // Identify the main content area correctly. 
+                // Since this partial is INSIDE .app-main, we check if data includes layout.
+                // The controller should return PartialView for Ajax requests.
+                
+                $('.app-main').html(data);
+                $('.app-main').css('opacity', '1');
+            },
+            error: function () {
+                // Determine whether to reload fully on error
+                window.location.href = url;
+            }
+        });
+    }
+</script>

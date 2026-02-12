@@ -1,0 +1,73 @@
+@model PennyWise.ViewModels.BudgetAllocationEditViewModel
+@{
+    ViewData["Title"] = "Budget Allocations";
+    var currency = ViewBag.CurrencySymbol as string ?? "$";
+}
+
+<div class="glass-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="mb-1">Budget Plan</h3>
+            <div class="mt-2">
+                 @(await Html.PartialAsync("_MonthSelector", new { Month = Model.Month, Year = Model.Year }))
+            </div>
+        </div>
+        <div class="text-end">
+            <span class="chip chip-neutral">@Model.Items.Count Categories</span>
+        </div>
+    </div>
+
+    <form asp-action="Allocations" method="post">
+        <input type="hidden" asp-for="Month" />
+        <input type="hidden" asp-for="Year" />
+        
+        <div class="table-responsive mb-4">
+            <table class="modern-table w-100">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th class="text-end" style="width: 200px;">Optimized Budget</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.Items.Count; i++)
+                    {
+                        <tr>
+                            <td class="fw-medium">
+                                @Model.Items[i].CategoryName
+                                <input type="hidden" asp-for="Items[i].CategoryId" />
+                                <input type="hidden" asp-for="Items[i].CategoryName" />
+                            </td>
+                            <td class="text-end">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-transparent border-end-0 text-muted" style="border-color: rgba(148, 163, 184, 0.1);">@currency</span>
+                                    <input asp-for="Items[i].AllocatedAmount" class="form-control text-end border-start-0 ps-1" placeholder="0.00" />
+                                </div>
+                                <span asp-validation-for="Items[i].AllocatedAmount" class="text-danger small"></span>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Items.Any())
+                    {
+                        <tr>
+                            <td colspan="2" class="text-center py-5 text-muted">
+                                No categories found. Please add categories first.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-modern btn-primary-glow">
+                Save Budget Plan
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

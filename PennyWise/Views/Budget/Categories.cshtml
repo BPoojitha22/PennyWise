@@ -1,0 +1,181 @@
+@model IEnumerable<PennyWise.ViewModels.BudgetCategoryViewModel>
+@{
+    ViewData["Title"] = "Settings";
+    var currency = ViewBag.CurrencySymbol as string ?? "$";
+    var userName = User.Identity?.Name ?? "User";
+}
+
+<!-- Page Header: Hidden on mobile, shown on desktop -->
+<div class="mb-3 mb-md-4 d-none d-md-block">
+    <h1 class="h3 fw-bold mb-1">Settings</h1>
+    <p class="text-muted small mb-0">Manage your categories and preferences</p>
+</div>
+
+<!-- Account Info Card -->
+<div class="glass-card mb-3 mb-md-4 p-3 p-md-4">
+    <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2">
+        <div>
+            <h5 class="mb-1 fw-bold" style="font-size: 1rem;">Account</h5>
+            <p class="text-muted small mb-0">@userName</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="text-muted small">Currency:</span>
+            <span class="badge bg-dark border border-secondary">@currency</span>
+        </div>
+    </div>
+</div>
+
+<!-- Budget Categories -->
+<div class="glass-card">
+    <div class="p-3 p-md-4 pb-2 pb-md-3 d-flex flex-column flex-md-row justify-content-between align-items-start gap-2 gap-md-3 border-bottom" style="border-color: rgba(148, 163, 184, 0.1) !important;">
+        <div class="flex-grow-1">
+            <h5 class="mb-1 fw-bold" style="font-size: 1rem;">Budget Categories</h5>
+            <p class="text-muted small mb-0 d-none d-md-block">Manage your spending buckets</p>
+        </div>
+        <button class="btn btn-modern btn-primary-glow btn-sm d-none d-md-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-1">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+            <span>Add Category</span>
+        </button>
+    </div>
+    
+    <div class="p-3 p-md-4">
+        @if (Model.Any())
+        {
+            <div class="row g-2 g-md-3">
+                @foreach (var category in Model)
+                {
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="glass-card p-3 h-100">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-medium">@category.Name</h6>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-link text-muted p-0" type="button" data-bs-toggle="dropdown">
+                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" style="background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(148, 163, 184, 0.2);">
+                                        <li>
+                                            <a class="dropdown-item text-white" href="javascript:void(0)" onclick="editCategory(@category.Id, '@category.Name')">
+                                                <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16" class="me-2">
+                                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                                </svg>
+                                                Edit
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider" style="border-color: rgba(148, 163, 184, 0.2);"></li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="deleteCategory(@category.Id, '@category.Name')">
+                                                <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16" class="me-2">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                </svg>
+                                                Delete
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <svg width="48" height="48" fill="currentColor" viewBox="0 0 16 16" class="text-muted mb-3">
+                    <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
+                </svg>
+                <p class="text-muted mb-3">No categories yet</p>
+                <button class="btn btn-modern btn-primary-glow" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                    Create Your First Category
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: rgba(15, 23, 42, 0.98); border: 1px solid rgba(148, 163, 184, 0.2); backdrop-filter: blur(20px);">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Add Category</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addCategoryForm" method="post" action="@Url.Action("CreateCategory", "Budget")">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small text-uppercase fw-bold">Category Name</label>
+                        <input type="text" name="Name" class="form-control" placeholder="e.g., Food, Transport, Entertainment" required />
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-modern btn-primary-glow">Add Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: rgba(15, 23, 42, 0.98); border: 1px solid rgba(148, 163, 184, 0.2); backdrop-filter: blur(20px);">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Edit Category</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editCategoryForm" method="post" action="@Url.Action("EditCategory", "Budget")">
+                <div class="modal-body">
+                    <input type="hidden" id="editCategoryId" name="Id" />
+                    <div class="mb-3">
+                        <label class="form-label text-muted small text-uppercase fw-bold">Category Name</label>
+                        <input type="text" id="editCategoryName" name="Name" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-modern btn-primary-glow">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Floating Add Button (Mobile Only) -->
+<button class="btn-fab d-md-none" data-bs-toggle="modal" data-bs-target="#addCategoryModal" aria-label="Add Category">
+    <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+    </svg>
+</button>
+
+<script>
+    function editCategory(id, name) {
+        $('#editCategoryId').val(id);
+        $('#editCategoryName').val(name);
+        $('#editCategoryModal').modal('show');
+    }
+    
+    function deleteCategory(id, name) {
+        if (confirm('Are you sure you want to delete "' + name + '"? This will also delete all associated budget allocations and expenses.')) {
+            $.post('@Url.Action("DeleteCategory", "Budget")', { id: id }, function() {
+                location.reload();
+            });
+        }
+    }
+    
+    $('#addCategoryForm, #editCategoryForm').on('submit', function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function() {
+            location.reload();
+        });
+    });
+</script>
