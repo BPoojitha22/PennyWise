@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PennyWise")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d4ba6c9cc864a07974b593ab6e6170a57e29a397")]
 [assembly: System.Reflection.AssemblyProductAttribute("PennyWise")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PennyWise")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
